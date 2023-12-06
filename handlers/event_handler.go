@@ -26,11 +26,11 @@ func SetupEventHandlers(router *gin.Engine) {
 	router.GET("/events/management_required", GetManagementStatus)
 }
 
-// @Summary Obtener la lista de eventos
-// @Description Obtiene la lista de eventos registrados
+// @Summary Obtener eventos
+// @Description Obtiene todos los eventos disponibles
 // @ID get-events
 // @Produce json
-// @Success 200 {array} Event
+// @Success 200 {array} RespuestaEvento
 // @Router /events [get]
 func GetEvents(c *gin.Context) {
 	var events []models.Event
@@ -43,10 +43,11 @@ func GetEvents(c *gin.Context) {
 }
 
 // @Summary Crear un nuevo evento
-// @Description Crea un nuevo evento.
+// @Description Crea un nuevo evento con la información proporcionada en el cuerpo JSON de la solicitud
+// @ID create-event
 // @Accept json
 // @Produce json
-// @Param input body Event true "Detalles del evento a crear"
+// @Param event body models.Event true "Detalles del evento a crear"
 // @Success 201 {object} RespuestaEvento
 // @Router /events [post]
 func CreateEvent(c *gin.Context) {
@@ -93,13 +94,13 @@ func CreateEvent(c *gin.Context) {
 }
 
 // @Summary Actualizar un evento existente
-// @Description Actualiza la información de un evento existente
+// @Description Actualiza un evento existente según el ID proporcionado en la URL con la información del cuerpo JSON de la solicitud
 // @ID update-event
 // @Accept json
-// @Param id path int true "ID del evento a actualizar"
-// @Param event body Event true "Detalles del evento actualizado"
 // @Produce json
-// @Success 200 {object} Event
+// @Param id path int true "ID del evento a actualizar"
+// @Param event body RespuestaEvento true "Detalles actualizados del evento"
+// @Success 200 {object} RespuestaEvento
 // @Router /events/{id} [put]
 func UpdateEvent(c *gin.Context) {
 	eventID := c.Param("id")
@@ -133,11 +134,11 @@ func UpdateEvent(c *gin.Context) {
 }
 
 // @Summary Eliminar un evento existente
-// @Description Elimina un evento existente por su ID
+// @Description Elimina un evento según el ID proporcionado en la URL
 // @ID delete-event
-// @Param id path int true "ID del evento a eliminar"
 // @Produce json
-// @Success 200 {object} gin.H
+// @Param id path int true "ID del evento a eliminar"
+// @Success 200 {object} Respuesta
 // @Router /events/{id} [delete]
 func DeleteEvent(c *gin.Context) {
 	eventID := c.Param("id")
@@ -231,6 +232,7 @@ func EventToRespuestaEvento(event models.Event) RespuestaEvento {
 
 // @Summary Obtener eventos revisados por Requiere Gestión / Sin Gestión
 // @Description Obtiene una lista de eventos revisados clasificados por Requiere Gestión o Sin Gestión.
+// @ID get-management-status
 // @Produce json
 // @Success 200 {object} RespuestaGestion
 // @Router /events/management_required [get]
@@ -238,7 +240,15 @@ func GetManagementStatus(c *gin.Context) {
 	var managementRequiredEvents []models.Event
 	var nonManagementRequiredEvents []models.Event
 
-	// ... tu lógica para obtener los eventos revisados por gestión
+	if err := utils.DB.Where("management_status = ?", "Requiere gestión").Find(&managementRequiredEvents).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, Respuesta{Mensaje: "Error al obtener eventos que requieren gestión"})
+		return
+	}
+
+	if err := utils.DB.Where("management_status = ?", "Sin gestión").Find(&nonManagementRequiredEvents).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, Respuesta{Mensaje: "Error al obtener eventos sin gestión"})
+		return
+	}
 
 	// Convertir models.Event a RespuestaEvento
 	var managementRequiredResponse []RespuestaEvento

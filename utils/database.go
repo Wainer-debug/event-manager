@@ -16,6 +16,5 @@ func InitDatabase() {
 		panic("Error al conectar con la base de datos: " + err.Error())
 	}
 
-	// AutoMigrate creará las tablas automáticamente basándose en tus modelos
 	DB.AutoMigrate(&models.Event{})
 }

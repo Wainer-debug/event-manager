@@ -14,7 +14,6 @@ type RespuestaEvento struct {
 	Status             string    `json:"status"`
 	ManagementRequired bool      `json:"management_required"`
 	ManagementStatus   string    `json:"management_status"`
-	// Agrega aquí otros campos del evento según tu modelo.
 }
 
 // RespuestaGestion es una estructura específica para respuestas JSON de eventos clasificados por gestión.

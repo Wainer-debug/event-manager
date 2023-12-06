@@ -1,4 +1,157 @@
+definitions:
+  handlers.Respuesta:
+    properties:
+      mensaje:
+        type: string
+    type: object
+  handlers.RespuestaEvento:
+    properties:
+      date:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      management_required:
+        type: boolean
+      management_status:
+        type: string
+      nombre:
+        type: string
+      status:
+        type: string
+      type_event_id:
+        type: integer
+    type: object
+  handlers.RespuestaGestion:
+    properties:
+      management_required:
+        items:
+          $ref: '#/definitions/handlers.RespuestaEvento'
+        type: array
+      non_management_required:
+        items:
+          $ref: '#/definitions/handlers.RespuestaEvento'
+        type: array
+    type: object
+  models.Event:
+    properties:
+      date:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      management_required:
+        type: boolean
+      management_status:
+        type: string
+      name:
+        type: string
+      status:
+        type: string
+      type_event_id:
+        type: integer
+    type: object
+host: localhost:8080
 info:
   contact: {}
-paths: {}
+  description: |-
+    Esta API permite gestionar eventos y organizarlos según el estado de revisión.
+    En la API se puedan agregar, editar, leer y borrar la información de los eventos y obtener eventos revisados por Requiere Gestión / Sin Gestión
+  title: Event Manager API
+  version: "1.0"
+paths:
+  /events:
+    get:
+      description: Obtiene todos los eventos disponibles
+      operationId: get-events
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/handlers.RespuestaEvento'
+            type: array
+      summary: Obtener eventos
+    post:
+      consumes:
+      - application/json
+      description: Crea un nuevo evento con la información proporcionada en el cuerpo
+        JSON de la solicitud
+      operationId: create-event
+      parameters:
+      - description: Detalles del evento a crear
+        in: body
+        name: event
+        required: true
+        schema:
+          $ref: '#/definitions/models.Event'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/handlers.RespuestaEvento'
+      summary: Crear un nuevo evento
+  /events/{id}:
+    delete:
+      description: Elimina un evento según el ID proporcionado en la URL
+      operationId: delete-event
+      parameters:
+      - description: ID del evento a eliminar
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.Respuesta'
+      summary: Eliminar un evento existente
+    put:
+      consumes:
+      - application/json
+      description: Actualiza un evento existente según el ID proporcionado en la URL
+        con la información del cuerpo JSON de la solicitud
+      operationId: update-event
+      parameters:
+      - description: ID del evento a actualizar
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Detalles actualizados del evento
+        in: body
+        name: event
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.RespuestaEvento'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.RespuestaEvento'
+      summary: Actualizar un evento existente
+  /events/management_required:
+    get:
+      description: Obtiene una lista de eventos revisados clasificados por Requiere
+        Gestión o Sin Gestión.
+      operationId: get-management-status
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.RespuestaGestion'
+      summary: Obtener eventos revisados por Requiere Gestión / Sin Gestión
 swagger: "2.0"

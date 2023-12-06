@@ -1,7 +1,230 @@
 {
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "Esta API permite gestionar eventos y organizarlos según el estado de revisión.\nEn la API se puedan agregar, editar, leer y borrar la información de los eventos y obtener eventos revisados por Requiere Gestión / Sin Gestión",
+        "title": "Event Manager API",
+        "contact": {},
+        "version": "1.0"
     },
-    "paths": {}
+    "host": "localhost:8080",
+    "paths": {
+        "/events": {
+            "get": {
+                "description": "Obtiene todos los eventos disponibles",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Obtener eventos",
+                "operationId": "get-events",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/handlers.RespuestaEvento"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Crea un nuevo evento con la información proporcionada en el cuerpo JSON de la solicitud",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Crear un nuevo evento",
+                "operationId": "create-event",
+                "parameters": [
+                    {
+                        "description": "Detalles del evento a crear",
+                        "name": "event",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Event"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.RespuestaEvento"
+                        }
+                    }
+                }
+            }
+        },
+        "/events/management_required": {
+            "get": {
+                "description": "Obtiene una lista de eventos revisados clasificados por Requiere Gestión o Sin Gestión.",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Obtener eventos revisados por Requiere Gestión / Sin Gestión",
+                "operationId": "get-management-status",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.RespuestaGestion"
+                        }
+                    }
+                }
+            }
+        },
+        "/events/{id}": {
+            "put": {
+                "description": "Actualiza un evento existente según el ID proporcionado en la URL con la información del cuerpo JSON de la solicitud",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Actualizar un evento existente",
+                "operationId": "update-event",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID del evento a actualizar",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Detalles actualizados del evento",
+                        "name": "event",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.RespuestaEvento"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.RespuestaEvento"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Elimina un evento según el ID proporcionado en la URL",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Eliminar un evento existente",
+                "operationId": "delete-event",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID del evento a eliminar",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.Respuesta"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "handlers.Respuesta": {
+            "type": "object",
+            "properties": {
+                "mensaje": {
+                    "type": "string"
+                }
+            }
+        },
+        "handlers.RespuestaEvento": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "management_required": {
+                    "type": "boolean"
+                },
+                "management_status": {
+                    "type": "string"
+                },
+                "nombre": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "type_event_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "handlers.RespuestaGestion": {
+            "type": "object",
+            "properties": {
+                "management_required": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/handlers.RespuestaEvento"
+                    }
+                },
+                "non_management_required": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/handlers.RespuestaEvento"
+                    }
+                }
+            }
+        },
+        "models.Event": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "management_required": {
+                    "type": "boolean"
+                },
+                "management_status": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "type_event_id": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
 }
