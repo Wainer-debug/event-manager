@@ -1,6 +1,6 @@
 # 🌟 Event Manager API REST
 
-Este es un proyecto que implementa una API la cual permite gestionar eventos y organizarlos según el estado de revisión. En la API se puedan agregar, editar, leer, y borrar la información de los eventos ...
+Este es un proyecto que implementa una API la cual permite gestionar eventos y organizarlos según el estado de revisión. En la API se pueden agregar, editar, leer, y borrar la información de los eventos ...
 
 ## 📋 Requerimientos
 
@@ -49,23 +49,23 @@ La aplicación se ejecutará en http://localhost:8080.
 
 - **Funcionalidades / Endpoints**
 
-    * Registro de eventos:
+    🤖 Registro de eventos:
         
         POST /events: Crea un nuevo evento.
         
-    * Edición de eventos:
+    🤖 Edición de eventos:
         
         PUT /events/:id: Actualiza un evento existente.
 
-    * Eliminación de eventos:
+    🤖 Eliminación de eventos:
         
         DELETE /events/:id: Elimina un evento por su ID.
 
-    * Obtención de eventos:
+    🤖 Obtención de eventos:
         
         GET /events: Obtiene la lista completa de eventos.
 
-    * Organización de eventos revisados:
+    🤖 Organización de eventos revisados:
         
         GET /events/management_required: Obtiene eventos revisados, clasificados en “Requiere gestión” o “sin gestión” 
 
@@ -107,7 +107,7 @@ La aplicación se ejecutará en http://localhost:8080.
     ```bash
     go test ./...
 
-Las pruebas unitarias quedan pendientes para una nueva versión.
+🚧 Las pruebas unitarias quedan pendientes para una nueva versión.
         
 ## 📖 Documentación en Swagger
     
